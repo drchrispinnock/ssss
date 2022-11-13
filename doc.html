@@ -7,7 +7,7 @@
   <body>
     <small>The following text is licensed under the 
       <a href="http://www.gnu.org/licenses/gpl.html">
-	GNU General Public License</a>. Copyright 2005 by
+	GNU General Public License</a>. Copyright 2005, 2006 by
       B. Poettering.</small> 
     <hr noshade="noshade"/>
     
@@ -37,27 +37,35 @@
 	can. Such a system is called a <i>(t,n)</i>-threshold scheme.
       </p>
     </blockquote>
-    A popular technique to implement threshold schemes uses
-    <a href="http://en.wikipedia.org/wiki/Polynomial_interpolation">
-      polynomial interpolation</a> ("Lagrange interpolation"). This
-    method was invented by <a
-    href="http://en.wikipedia.org/wiki/Adi_Shamir"> Adi Shamir</a> in
-    1979. You can play around with a threshold scheme on
-    the <a href="http://www.point-at-infinity.org/ssss/demo.html">demo 
-      page</a>.  
-
+    <p>
+        A popular technique to implement threshold schemes uses <a
+	href="http://en.wikipedia.org/wiki/Polynomial_interpolation">
+	polynomial interpolation</a> ("Lagrange interpolation"). This
+        method was invented by <a
+   	href="http://en.wikipedia.org/wiki/Adi_Shamir"> Adi Shamir</a> in
+        1979. You can play around with a threshold scheme on the <a
+        href="http://point-at-infinity.org/ssss/demo.html">demo page</a>.
+	</p>
+    <p>
+    Note that Shamir's scheme is provable secure, that means: in a
+    <i>(t,n)</i> scheme one can prove that it makes no difference
+    whether an attacker has <i>t-1</i> valid shares at his disposal or
+    none at all; as long as he has less than
+    <i>t</i> shares, there is no better option than guessing to find
+    out the secret.
+    </p>
       <h4>Where is "Secret Sharing" used?</h4> Some popular examples are:
-    <ul>
+      <ul>
       <li>
 	Good passwords are hard to memorize. A clever user could use a
 	secret sharing scheme to generate a set of shares for a given
 	password and store one share in his address book, one in his
-	bank deposit safe, leave one share with a friend, etc. If he
-	forgets his password one day, he can reconstruct it easily. Of
+	bank deposit safe, leave one share with a friend, etc. If one day he
+	forgets his password, he can reconstruct it easily. Of
 	course, writing passwords directly into the address book would
 	pose a security risk, as it could be stolen by an "enemy". If
 	a secret sharing scheme is used, the attacker has to steal
-	many several shares from different places.
+	many shares from different places.
       </li>
       <li>
 	"A dealer could send <i>t</i> shares, all of which are
@@ -81,98 +89,87 @@
     <h4>What is "ssss"? Where can I download "ssss"?</h4>
     <p>
       <b>ssss</b> is an implementation of Shamir's secret sharing
-      scheme for UNIX systems, tested only on linux machines until
-      now. The code is licensed under the <a
+      scheme for UNIX systems, especially developed for linux
+      machines. The code is licensed under the <a
       href="http://www.gnu.org/licenses/gpl.html">GNU GPL</a>.
-      <b>ssss</b> does both the generation of shares for a known
+      <b>ssss</b> does both: the generation of shares for a known
       secret and the reconstruction of a secret using user provided
-      shares.  The software was written in 2005 by B. Poettering, it
+      shares.  The software was written in 2006 by B. Poettering, it
       links against the <a href="http://swox.com/gmp/">GNU libgmp</a>
-      multiprecision library (version 4.1.4 in my case) and requires
+      multiprecision library (version 4.1.4 works well) and requires
       the <tt>/dev/random</tt> entropy source. Please send bug reports
       to <b><tt>ssss AT point-at-infinity.org</tt></b>.
     </p>
+    <p>There is a <a
+    href="http://freshmeat.net/projects/ssss/">freshmeat page</a> for
+    <b>ssss</b>. A <a
+    href="http://packages.debian.org/unstable/utils/ssss">debian
+    package</a> is also available. If you are the lucky owner of a
+    debian system just run <tt>apt-get update &amp;&amp; apt-get
+    install ssss</tt> to install <b>ssss</b>. Someone even ported (an
+    outdated version of) <b>ssss</b> to <a
+    href="http://www.seidlitz.ca/ssss/">Windows</a> (but with a
+    lightly too sloppy random number generation, in my opinion).
+    </p>
     <p>
-      Download here: <a
-	href="http://www.point-at-infinity.org/ssss/ssss-0.2.tar.gz">ssss-0.2.tar.gz</a><small>, <a
-	href="http://www.point-at-infinity.org/ssss/ssss-0.1.tar.gz">ssss-0.1.tar.gz</a></small>
+      Download on the <a href="http://point-at-infinity.org/ssss">ssss homepage</a>.
     </p>
 
-    <h4>How is "ssss" used? Is there an online demonstation?</h4> 
+    <h4>How is "ssss" used? Is there an online demonstration?</h4> 
     <p>The generation of shares given a
       known secret is shown first.  A (3,5)-threshold scheme is used, that is:
       5 shares are generated, the secret can be reconstructed by any
       subset of size 3.
     </p>
     <pre>
-      % ssss split -t 3 -n 5
-      Generating shares using a (3,5) scheme with a 128 bit security level.
-      Enter the secret, at most 16 ASCII characters: secretrootpasswd
-      1-d80c3e34d56c3685e5ae825e04f6b71f
-      2-70708d35dd805d8d031a92ceafe4a3ff
-      3-9aa4f16f76ded85877e661cab6d765f4
-      4-eb890362ed68fb365b07a001789fac7e
-      5-015d7f3846367ee32ffb530561ac6a67
+      % ssss-split -t 3 -n 5
+      Generating shares using a (3,5) scheme with dynamic security level.
+      Enter the secret, at most 128 ASCII characters: my secret root password
+      Using a 184 bit security level.
+      1-1c41ef496eccfbeba439714085df8437236298da8dd824
+      2-fbc74a03a50e14ab406c225afb5f45c40ae11976d2b665
+      3-fa1c3a9c6df8af0779c36de6c33f6e36e989d0e0b91309
+      4-468de7d6eb36674c9cf008c8e8fc8c566537ad6301eb9e
+      5-4756974923c0dce0a55f4774d09ca7a4865f64f56a4ee0
     </pre>
     These shares can be combined to recreate the secret:
     <pre>
-      % ssss combine -t 3
-      Share [1/3]: 2-70708d35dd805d8d031a92ceafe4a3ff
-      Share [2/3]: 5-015d7f3846367ee32ffb530561ac6a67
-      Share [3/3]: 3-9aa4f16f76ded85877e661cab6d765f4
-      Resulting secret: secretrootpasswd
+      % ssss-combine -t 3
+      Enter 3 shares separated by newlines:
+      Share [1/3]: 3-fa1c3a9c6df8af0779c36de6c33f6e36e989d0e0b91309
+      Share [2/3]: 5-4756974923c0dce0a55f4774d09ca7a4865f64f56a4ee0
+      Share [3/3]: 2-fbc74a03a50e14ab406c225afb5f45c40ae11976d2b665
+      Resulting secret: my secret root password
     </pre>
-    You can try out everything on the
-    <a href="http://www.point-at-infinity.org/ssss/demo.html">demo page</a>.
+    You can try it out on the
+    <a href="http://point-at-infinity.org/ssss/demo.html">demo page</a>.
 
-    <h4>What are the program's options?</h4>
-    <pre>
-      Syntax:
-      ssss split -t threshold -n shares [-s level] [-w token] [-x] [-q]
-      ssss combine -t threshold [-x] [-q] [-D]
-      
-      Commands:
-      split: prompt the user for a secret and calculate a set of
-      corresponding shares.
-      
-      combine: read in a set of shares and reconstruct the secret.
-      
-      Options:
-      -t threshold
-      the number of shares necessary to reconstruct the secret.
-      
-      -n shares
-      the number of shares to be generated.
-      
-      -s level
-      security level: the scheme's security level in bits. The security
-      level is an upper bound for the length of the shared secret
-      (shorter secrets are padded). Allowed values are 80, 112, 128,
-      192, 256, 512 and 1024. The default is 128.
-      
-      -w token
-      text token to name shares in order to avoid confusion in case you
-      utilize secret sharing to protect several independent secrets. The
-      generated shares are prefixed by these tokens.
-      
-      -x
-      hex mode: use hexadecimal digits in place of ASCII characters for
-      I/O. This is useful if you want to protect binary data, like
-      block cipher keys.
-      
-      -q
-      quiet mode: disable all unnecessary output. Useful in scripts.
-      Note: the option -Q works like -q, but warnings are suppressed also.
+    <p>
+    If larger secrets are to be shared a hybrid technique has to be
+    applied: encrypt the secret with a block cipher (using openssl,
+    gpg, etc) and apply secret sharing to just the key. See the man
+    page for more information about this topic.
+    </p>
 
-      -D
-      disable the diffusion layer added in version 0.2. This option is
-      needed when the shares where generated with ssss version 0.1.
-    </pre>
-    
+
+    <h4>Where is the manpage?</h4>
+   Read it as <a href="http://point-at-infinity.org/ssss/ssss.1.html">html</a> or 
+    <a href="http://point-at-infinity.org/ssss/ssss.1">*roff</a>! 
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input name="cmd" value="_xclick" type="hidden">
+<input name="business" value="mzcnlcny@0pointer.de" type="hidden">
+<input name="no_note" value="1" type="hidden">
+<input name="currency_code" value="EUR" type="hidden">
+   <p>
+If you like this software, think about donating some money via
+   <input src="https://www.paypal.com/en_US/i/btn/x-click-but7.gif" name="submit" alt="PayPal" type="image">.
+</p>
+</form>
     <hr>
     <small>
       <!-- hhmts start -->
-Last modified: Sun Jun 12 21:49:46 CEST 2005
+Last modified: Sun Jan 15 12:08:48 CET 2006
 <!-- hhmts end -->
     </small>
   </body>
